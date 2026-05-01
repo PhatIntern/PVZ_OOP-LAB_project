@@ -18,14 +18,39 @@ public abstract class Zombies {
 
     public void update() {
 
+        // ❄️ slow effect
+        if (slowTimer > 0) {
+            slowTimer--;
+        } else {
+            speed = originalSpeed;
+        }
 
-            if (slowTimer > 0) {
-                slowTimer--;
-            } else {
-                speed = originalSpeed;
+
+        int col = (int)((x + 30) / 100);
+
+
+        if (col >= 0 &&
+                col < Core.Game.getInstance().grid.cols &&
+                row >= 0 &&
+                row < Core.Game.getInstance().grid.rows) {
+
+            var cell = Core.Game.getInstance().grid.cells[row][col];
+
+
+            if (cell.plant != null) {
+
+                cell.plant.hp -= 1;
+
+                // cây chết
+                if (cell.plant.hp <= 0) {
+                    cell.plant = null;
+                }
+
+                return;
             }
+        }
 
-            x -= speed;
-
-    };
+        // continue walk
+        x -= speed;
+    }
 }

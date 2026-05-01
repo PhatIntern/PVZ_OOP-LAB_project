@@ -1,6 +1,7 @@
 package Core;
 import java.util.ArrayList;
 import Entities.Bullet;
+import Entities.LawnMower;
 import Entities.Zombies;
 import Map.Grid;
 import Entities.Zombie.*;
@@ -13,9 +14,16 @@ public class Game {
     public ArrayList<Sun> suns = new ArrayList<>();
     public int sun = 50; // initial sun
     public Grid grid;
+    public ArrayList<LawnMower> mowers = new ArrayList<>();
+
+
+    // constructor
 
     private Game() {
         grid = new Grid(5, 9);
+        for(int i = 0; i < grid.rows; i++) {
+            mowers.add(new LawnMower(i));
+        }
     }
 
     public static Game getInstance() {
@@ -129,12 +137,50 @@ public class Game {
             }
         }
 
+        //update mower
+        for (int i = 0; i < mowers.size(); i++) {
+
+            LawnMower m = mowers.get(i);
+
+            m.update();
+
+
+            if (m.active) {
+
+                for (int j = 0; j < Zombies.size(); j++) {
+
+                    Zombies z = Zombies.get(j);
+
+                    if (z.row == m.row &&
+                            Math.abs(z.x - m.x) < 60) {
+
+                        Zombies.remove(j);
+                        j--;
+                    }
+                }
+            }
+        }
         //  collision
         handleCollision();
         for (var z : Zombies) {
+
             if (z.x <= 0) {
-                System.out.println("GAME OVER");
-                System.exit(0);
+
+                LawnMower mower = mowers.get(z.row);
+
+                // if not used, activate
+                if (!mower.used) {
+
+                    mower.active = true;
+                    mower.used = true;
+
+                    mower.x = 0;
+                }
+                else {
+
+                    System.out.println("GAME OVER");
+                    System.exit(0);
+                }
             }
         }
     }

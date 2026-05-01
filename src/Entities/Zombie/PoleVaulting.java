@@ -14,28 +14,48 @@ public class PoleVaulting extends Zombies {
     @Override
     public void update() {
 
-        int col = (int)(x / 100);
 
-        // check plant ahead
-        if (!jumped &&
-                col >= 0 &&
+        if (slowTimer > 0) {
+            slowTimer--;
+        } else {
+            speed = originalSpeed;
+        }
+
+        int col = (int)((x + 30) / 100);
+
+        // check trong map
+        if (col >= 0 &&
                 col < Game.getInstance().grid.cols &&
                 row >= 0 &&
                 row < Game.getInstance().grid.rows) {
 
             var cell = Game.getInstance().grid.cells[row][col];
 
-            if (cell.plant != null) {
 
-                //  jump over plant
+            if (!jumped && cell.plant != null) {
+
                 x -= 100;
 
                 jumped = true;
 
-                // walk slower after jumping
                 speed = 1;
+
+                return;
+            }
+
+           //after jumping the first time, eat tree
+            if (jumped && cell.plant != null) {
+
+                cell.plant.hp -= 1;
+
+                if (cell.plant.hp <= 0) {
+                    cell.plant = null;
+                }
+
+                return;
             }
         }
+
 
         x -= speed;
     }

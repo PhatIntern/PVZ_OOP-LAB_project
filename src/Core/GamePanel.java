@@ -13,6 +13,7 @@ public class GamePanel extends JPanel {
     private int hoverRow = -1;
     private int hoverCol = -1;
     private int OffsetY = 100;
+    private boolean shovelMode = false;
     Game game = Game.getInstance();
     private PlantType selectedPlant = null;
 
@@ -131,6 +132,16 @@ public class GamePanel extends JPanel {
         if (selectedPlant == PlantType.WALL_NUT)
             g.drawRect(750, 20, 60, 60);
 
+        if(shovelMode) {
+            g.drawRect(850, 20, 40, 40);
+        }
+
+        //shovel
+        g.setColor(Color.GRAY);
+        g.fillRect(850, 20, 40, 40);
+
+        g.setColor(Color.BLACK);
+        g.drawString("Shovel", 865, 45);
         // Vẽ grid
         game.grid.draw(g);
         //Đạn
@@ -139,47 +150,85 @@ public class GamePanel extends JPanel {
             g.fillOval((int)b.x, b.row * 100 + OffsetY +40, 10, 10);
         }
         //Hover
-        if (selectedPlant != null && hoverRow != -1) {
+        if (hoverRow != -1) {
 
-            if (game.grid.cells[hoverRow][hoverCol].plant == null) {
+            Graphics2D g2 = (Graphics2D) g;
 
-                Graphics2D g2 = (Graphics2D) g;
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            g2.setComposite(
+                    AlphaComposite.getInstance(
+                            AlphaComposite.SRC_OVER,
+                            0.5f
+                    )
+            );
 
-                switch (selectedPlant) {
-                    case SUNFLOWER:
-                        g2.setColor(Color.YELLOW);
-                        break;
-                    case PEASHOOTER:
-                        g2.setColor(Color.GREEN);
-                        break;
-                    case POTATOMINE:
-                        g2.setColor(Color.DARK_GRAY);
-                        break;
-                    case SNOWPEA:
-                        g2.setColor(Color.CYAN);
-                        break;
-                    case REPEATER:
-                        g2.setColor(Color.GREEN);
-                        break;
-                    case CHOMPER:
-                        g2.setColor(Color.MAGENTA);
-                        break;
-                    case CHERRYBOMB:
-                        g2.setColor(Color.RED);
-                        break;
-                    case WALL_NUT:
-                        g2.setColor(Color.ORANGE);
-                        break;
+            //  preview plant
+            if (selectedPlant != null &&
+                    game.grid.cells[hoverRow][hoverCol].plant == null) {
+
+                if (selectedPlant == PlantType.SUNFLOWER) {
+                    g2.setColor(Color.YELLOW);
+                }
+                else if (selectedPlant == PlantType.PEASHOOTER) {
+                    g2.setColor(Color.BLUE);
+                }
+                else if (selectedPlant == PlantType.WALL_NUT) {
+                    g2.setColor(Color.ORANGE);
+                }
+                else if (selectedPlant == PlantType.CHERRYBOMB) {
+                    g2.setColor(Color.RED);
+                }
+                else if (selectedPlant == PlantType.POTATOMINE) {
+                    g2.setColor(Color.DARK_GRAY);
+                }
+                else if (selectedPlant == PlantType.SNOWPEA) {
+                    g2.setColor(Color.CYAN);
+                }
+                else if (selectedPlant == PlantType.REPEATER) {
+                    g2.setColor(Color.GREEN);
+                }
+                else if (selectedPlant == PlantType.CHOMPER) {
+                    g2.setColor(Color.MAGENTA);
                 }
 
                 g2.fillRect(
                         hoverCol * 100 + 20,
-                        hoverRow * 100 + OffsetY + 20,
-                        60, 60
+                        hoverRow * 100 + 120,
+                        60,
+                        60
                 );
+            }
 
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
+            // shovel
+            if (shovelMode &&
+                    game.grid.cells[hoverRow][hoverCol].plant != null) {
+
+                g2.setColor(Color.RED);
+
+                g2.fillRect(
+                        hoverCol * 100,
+                        hoverRow * 100 + 100,
+                        100,
+                        100
+                );
+            }
+
+            g2.setComposite(
+                    AlphaComposite.getInstance(
+                            AlphaComposite.SRC_OVER,
+                            1f
+                    )
+            );
+        }
+        //mower
+        g.setColor(Color.GRAY);
+        for(var m : game.mowers) {
+            if(!m.used || m.active) {
+                g.fillRect(
+                        (int)m.x,
+                        m.row * 100 + OffsetY + 30,
+                        50,
+                        40
+                );
             }
         }
         // Vẽ zombie
@@ -257,12 +306,25 @@ public class GamePanel extends JPanel {
             else if (x >= 750 && x <= 810) {
                 selectedPlant = PlantType.WALL_NUT;
             }
+            else if(x >= 850 && x <= 890) {
+                shovelMode = !shovelMode;
+                selectedPlant = null;
+            }
             return;
         }
+
         // plant tree
         int col = x / 100;
         int row = (y - 100) / 100;
         if (row >= game.grid.rows || col >= game.grid.cols) return;
+
+
+        if(shovelMode) {
+            game.grid.cells[row][col].plant = null;
+            repaint();
+            return;
+        }
+
         if (game.grid.cells[row][col].plant == null && selectedPlant != null) {
 
             switch (selectedPlant) {
