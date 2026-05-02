@@ -1,6 +1,7 @@
 package Entities.Plant;
-import Entities.Plants;
+
 import Core.Game;
+import Entities.Plants;
 
 public class Chomper extends Plants {
 
@@ -12,24 +13,36 @@ public class Chomper extends Plants {
 
     @Override
     public void update() {
-        cooldown--;
 
-        if (cooldown <= 0) {
-            eatZombie();
+
+        if (cooldown > 0) {
+            cooldown--;
+            return;
         }
-    }
 
-    private void eatZombie() {
-        var zombies = Game.getInstance().Zombies;
 
-        for (int i = 0; i < zombies.size(); i++) {
-            var z = zombies.get(i);
+        for (int i = 0; i < Game.getInstance().Zombies.size(); i++) {
 
-            if (z.row == row && Math.abs(z.x - col * 100) < 60) {
-                zombies.remove(i); // eat
-                cooldown = 150; // cooldown for next zombie
+            var z = Game.getInstance().Zombies.get(i);
+
+            int zCol = (int)((z.x + 30) / 100);
+
+
+            if (z.row == row &&
+                    (zCol == col || zCol == col + 1)) {
+
+
+                Game.getInstance().Zombies.remove(i);
+
+
+                cooldown = 100;
+
                 break;
             }
         }
+    }
+
+    public boolean isEating() {
+        return cooldown > 0;
     }
 }

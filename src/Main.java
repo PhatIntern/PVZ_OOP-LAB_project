@@ -1,4 +1,4 @@
-// chịu trách nhiệm vận hành game
+
 import javax.swing.JFrame;
 import Core.GamePanel;
 

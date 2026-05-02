@@ -47,16 +47,32 @@ public class Grid {
                         g.setColor(Color.YELLOW);
                     }
                     else if (cells[i][j].plant instanceof PeaShooter) {
-                        g.setColor(Color.GREEN); //
+                        g.setColor(Color.GREEN);
                     }
                     else if (cells[i][j].plant instanceof WallNut){
                         g.setColor(Color.ORANGE);
                     }
                     else if (cells[i][j].plant instanceof CherryBomb) g.setColor(Color.RED);
-                    else if (cells[i][j].plant instanceof PotatoMine) g.setColor(Color.DARK_GRAY);
+                    else if (cells[i][j].plant instanceof PotatoMine) {
+                        PotatoMine p = (PotatoMine) cells[i][j].plant;
+                        if(p.isArmed()) {
+                            g.setColor(Color.BLACK);
+                        }
+                        else {
+                            g.setColor(Color.LIGHT_GRAY);
+                        }
+                    }
                     else if (cells[i][j].plant instanceof SnowPea) g.setColor(Color.CYAN);
                     else if (cells[i][j].plant instanceof Repeater) g.setColor(Color.GREEN);
-                    else if (cells[i][j].plant instanceof Chomper) g.setColor(Color.MAGENTA);
+                    else if (cells[i][j].plant instanceof Chomper) {
+                        Chomper c = (Chomper) cells[i][j].plant;
+                        if(c.isEating()) {
+                            g.setColor(Color.PINK);
+                        }
+                        else {
+                            g.setColor(Color.MAGENTA);
+                        }
+                    }
 
                     g.fillRect(j * 100 + 20, i * 100 + OffsetY + 20, 60, 60);
                 }

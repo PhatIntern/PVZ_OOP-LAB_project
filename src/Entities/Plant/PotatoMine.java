@@ -1,11 +1,12 @@
 package Entities.Plant;
-import Entities.Plants;
-import Core.Game;
 
+import Core.Game;
+import Entities.Plants;
 
 public class PotatoMine extends Plants {
 
-    private int timer = 100; //
+    private int timer = 0;
+
     private boolean armed = false;
 
     public PotatoMine(int r, int c) {
@@ -14,28 +15,36 @@ public class PotatoMine extends Plants {
 
     @Override
     public void update() {
-        if (!armed) {
-            timer--;
-            if (timer <= 0) {
-                armed = true;
-            }
-        } else {
-            explodeIfZombie();
+
+        timer++;
+
+
+        if (timer >= 50) {
+            armed = true;
         }
-    }
 
-    private void explodeIfZombie() {
-        var zombies = Game.getInstance().Zombies;
 
-        for (int i = 0; i < zombies.size(); i++) {
-            var z = zombies.get(i);
+        if (!armed) return;
 
-            if (z.row == row && Math.abs(z.x - col * 100) < 40) {
-                z.hp = 0;
-                // self destroy
+
+        for (int i = 0; i < Game.getInstance().Zombies.size(); i++) {
+
+            var z = Game.getInstance().Zombies.get(i);
+
+            int zCol = (int)((z.x + 30) / 100);
+
+            if (z.row == row && zCol == col) {
+                //explode
+                Game.getInstance().Zombies.remove(i);
+                //remove
                 Game.getInstance().grid.cells[row][col].plant = null;
+
                 break;
             }
         }
+    }
+
+    public boolean isArmed() {
+        return armed;
     }
 }
