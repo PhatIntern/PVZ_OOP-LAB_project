@@ -169,7 +169,7 @@ public class GamePanel extends JPanel {
                     g2.setColor(Color.YELLOW);
                 }
                 else if (selectedPlant == PlantType.PEASHOOTER) {
-                    g2.setColor(Color.BLUE);
+                    g2.setColor(Color.GREEN);
                 }
                 else if (selectedPlant == PlantType.WALL_NUT) {
                     g2.setColor(Color.ORANGE);
