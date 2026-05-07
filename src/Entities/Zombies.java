@@ -18,7 +18,7 @@ public abstract class Zombies {
 
     public void update() {
 
-        // ❄️ slow effect
+        // slow effect
         if (slowTimer > 0) {
             slowTimer--;
         } else {
@@ -41,7 +41,7 @@ public abstract class Zombies {
 
                 cell.plant.hp -= 1;
 
-                // cây chết
+                // plant die
                 if (cell.plant.hp <= 0) {
                     cell.plant = null;
                 }
