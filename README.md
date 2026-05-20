@@ -94,3 +94,11 @@ The game features multiple plant and zombie types, projectile combat, sun econom
 
 
 <img width="1118" height="746" alt="Screenshot 2026-05-02 075600" src="https://github.com/user-attachments/assets/7b658b30-ad50-4981-a1bc-bacaae35a3ae" />
+
+---
+# Developed by
+
+- ITITWE24063 - Nguyễn Tấn Phát
+- ITITIU24041 - Lê Văn Nhân
+- ITITWE24013 - Hoàng Hải Đăng
+- ITITIU24001 - Nguyễn Thế Đức Anh
